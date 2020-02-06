@@ -1,0 +1,58 @@
+.btn.btn-light.color-green{
+    background-color: green;
+}
+
+#first{
+    margin-top: 100px;
+}
+
+#search{
+    margin-left: 10px;
+}
+
+#myModalLabel{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+table  {
+   border: black;
+}
+
+th{
+    text-align: center;
+    background-color: red;
+    color: white;
+}
+td {
+    text-align: center;
+    padding: 10px;
+}
+
+tr{
+    text-align: center;
+    
+}
+
+#edit:hover{
+    background-color: blue;
+}
+
+#trash:hover{
+    background-color: red;
+}
+
+.btn.btn-light.color-blue{
+    background-color: blue;
+    width: 40px;
+    height: 40px;
+    border-radius: 3em;
+
+}
+
+.btn.btn-light.color-red{
+    background-color: red;
+    width: 40px;
+    height: 40px;
+    border-radius: 4em;
+}
