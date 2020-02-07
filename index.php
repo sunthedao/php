@@ -33,11 +33,13 @@ $connection = DB();
         <div align="left" id="first" class="row">
             <div class="col">
                 <form class="form-inline md-form form-sm active-cyan-2 mt-2" action="" method="GET">
-                    <input name="name" class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" aria-label="Search">
+                    <input name="name" class="form-control form-control-sm mr-3 w-75" type="text" placeholder="Search" aria-label="Search" 
+                    <?php echo ((isset($_GET['name'])) ? 'value= '. $_GET['name'] :'').''?> >
+                    <! //!-- echo แบบมีเงื่อนไข -->
                     <i class="fas fa-search" aria-hidden="true"></i>
                 </form>
             </div>
-            <div id="result"></div>
+            
             <!-- icon -->
 
             <!-- //! div align left-right เค้าจะไม่นิยมใช้งานในนี้ เค้าจะจัด style ใน CSS -->
@@ -71,28 +73,29 @@ $connection = DB();
 
                 <?php
                 if (isset($_GET['name'])) {
-                       //! define how many results you want per page
-                       $results_per_page = 10;
+                    //! define how many results you want per page
+                    $results_per_page = 10;
 
-                       //! find out the number of results rows in database
-                       $sql1 = "SELECT * FROM users";
-                       $result = mysqli_query($connection, $sql1);
-                       //! check how many rows with mysqli_num_rows
-                       $number_of_results = mysqli_num_rows($result);
-   
-   
-                       //! determine number of total pages available
-                       // number of page = result / 10;
-                       $number_of_pages = ceil($number_of_results / $results_per_page);
-   
-                       // !determine which page number visitor is currently on
-                       if (!isset($_GET['page'])) {
-                           $page = 1;
-                       } else {
-                           $page = $_GET['page'];
-                       }
+                    //! find out the number of results rows in database
+                    $sql1 = "SELECT * FROM users";
+                    $result = mysqli_query($connection, $sql1);
+                    //! check how many rows with mysqli_num_rows
+                    $number_of_results = mysqli_num_rows($result);
+
+
+                    //! determine number of total pages available
+                    // number of page = result / 10;
+                    $number_of_pages = ceil($number_of_results / $results_per_page);
+
+                    // !determine which page number visitor is currently on
+                    if (!isset($_GET['page'])) {
+                        $page = 1;
+                    } else {
+                        $page = $_GET['page'];
+                    }
+
                     $valueSearch = $_GET['name'];
-                    $sql = "SELECT * from users WHERE firstname LIKE '%$valueSearch%'";
+                    $sql = "SELECT * from users WHERE firstname LIKE '%$valueSearch%' LIMIT 10";
                     $SearchResult = mysqli_query($connection, $sql);
 
                     while ($row = mysqli_fetch_array($SearchResult)) {
@@ -108,27 +111,27 @@ $connection = DB();
                 } else {
                     // $sql = "SELECT * from users LIMIT 10";
                     // $result = mysqli_query($connection, $sql);
-                    // retrieve selected results from database and display them on page
-                        //! define how many results you want per page
-                        $results_per_page = 10;
 
-                        //! find out the number of results rows in database
-                        $sql1 = "SELECT * FROM users";
-                        $result = mysqli_query($connection, $sql1);
-                        //! check how many rows with mysqli_num_rows
-                        $number_of_results = mysqli_num_rows($result);
+                    //! define how many results you want per page
+                    $results_per_page = 10;
+
+                    //! find out the number of results rows in database
+                    $sql1 = "SELECT * FROM users";
+                    $result = mysqli_query($connection, $sql1);
+                    //! check how many rows with mysqli_num_rows
+                    $number_of_results = mysqli_num_rows($result);
 
 
-                        //! determine number of total pages available
-                        // number of page = result / 10;
-                        $number_of_pages = ceil($number_of_results / $results_per_page);
+                    //! determine number of total pages available
+                    // number of page = result / 10;
+                    $number_of_pages = ceil($number_of_results / $results_per_page);
 
-                        // !determine which page number visitor is currently on
-                        if (!isset($_GET['page'])) {
-                            $page = 1;
-                        } else {
-                            $page = $_GET['page'];
-                        }
+                    // !determine which page number visitor is currently on
+                    if (!isset($_GET['page'])) {
+                        $page = 1;
+                    } else {
+                        $page = $_GET['page'];
+                    }
 
                     //! determine the sql LIMIT starting number for the results on the displaying page
                     // page 1 10 results per page , LIMIT 0,10
@@ -136,7 +139,8 @@ $connection = DB();
                     // page 3 10 results per page , LIMIT 20,10
                     // starting_limit_number = (page1-1)*10
                     $this_page_first_result = ($page - 1) * $results_per_page;
-                    $sql = "SELECT * from users LIMIT " . $this_page_first_result .  ',' . $results_per_page;
+                    // retrieve selected results from database and display them on page
+                    $sql = "SELECT * from users ORDER BY id DESC LIMIT " . $this_page_first_result .  ',' . $results_per_page;
                     $result = mysqli_query($connection, $sql);
 
                     while ($rows = mysqli_fetch_array($result)) {
@@ -170,10 +174,14 @@ $connection = DB();
                     </a>
                 </li>
 
-                <?php
+                <?php              
                 for ($page = 1; $page <= $number_of_pages; $page++) {
-                    echo '<li><a href="index.php?page=' . $page . '">' . $page . '</a></li>  ';
+                    echo '<li class="page-item"><a class="page-link" href="index.php?page=' . $page . 
+                    ((isset($_GET['name'])) ? "&name=" .$_GET['name']: '' ).'">'  .  $page   .  ' </a></li>  ';         
+                    //! &name ถ้าให้มันแสดงออกไป url (www.gdsf.com/id=12&name=)  ใส่double quote แต่ถ้าให้มันแสดงเป็น Code ใส่ Single quote '<li>'
+                    
                 }
+         
                 ?>
 
                 <a class="page-link" href="#" aria-label="Next">
@@ -232,8 +240,8 @@ $connection = DB();
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
-
+<?php
 mysqli_close($connection);
-
+?>
 
 </html>

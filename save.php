@@ -1,7 +1,7 @@
 <?php require_once './connect.php' ?>
 <?php $connection = DB() ?>
 <?php
-
+// button insertdata
 if(isset($_POST['insertdata']))
 {
     $Firstname = $_POST['Firstname'];
