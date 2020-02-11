@@ -1,5 +1,76 @@
 <?php require_once './connect.php';
 $connection = DB();
+if (isset($_GET['name'])) {
+    //! define how many results you want per page
+    $results_per_page = 10;
+
+    $valueSearch = $_GET['name'];
+    // !determine which page number visitor is currently on
+    if (!isset($_GET['page'])) {
+        $page = 1;
+    } else {
+        $page = $_GET['page'];
+    }
+
+    //! determine the sql LIMIT starting number for the results on the displaying page
+    // page 1 10 results per page , LIMIT 0,10
+    // page 2 10 results per page , LIMIT 10,10
+    // page 3 10 results per page , LIMIT 20,10
+    // starting_limit_number = (page1-1)*10
+    $this_page_first_result = ($page - 1) * $results_per_page;
+
+    //! find out the number of Searchresults rows in database
+    //  $sql1 = "SELECT * FROM users";
+    // $result = mysqli_query($connection, $sql);
+    $sql1 = "SELECT * from users WHERE Firstname LIKE '%$valueSearch%'";
+    // . $this_page_first_result . ',' . $results_per_page;
+    $SearchResult = mysqli_query($connection, $sql1);
+
+
+    //! check how many rows with mysqli_num_rows
+    $number_of_results = mysqli_num_rows($SearchResult);
+
+
+    //! determine number of total pages available
+    // number of page = result / 10;
+    $number_of_pages = ceil($number_of_results / $results_per_page);
+
+    $sql = "SELECT * from users WHERE Firstname LIKE '%$valueSearch%' ORDER BY id DESC LIMIT " . $this_page_first_result . ',' . $results_per_page;
+    $result = mysqli_query($connection, $sql);
+} else {
+    // $sql = "SELECT * from users LIMIT 10";
+    // $result = mysqli_query($connection, $sql);
+
+    //! define how many results you want per page
+    $results_per_page = 10;
+
+    //! find out the number of results rows in database
+    $sql1 = "SELECT * FROM users";
+    $result = mysqli_query($connection, $sql1);
+    //! check how many rows with mysqli_num_rows
+    $number_of_results = mysqli_num_rows($result);
+
+    //! determine number of total pages available
+    // number of page = result / 10;
+    $number_of_pages = ceil($number_of_results / $results_per_page);
+
+    // !determine which page number visitor is currently on
+    if (!isset($_GET['page'])) {
+        $page = 1;
+    } else {
+        $page = $_GET['page'];
+    }
+
+    //! determine the sql LIMIT starting number for the results on the displaying page
+    // page 1 10 results per page , LIMIT 0,10
+    // page 2 10 results per page , LIMIT 10,10
+    // page 3 10 results per page , LIMIT 20,10
+    // starting_limit_number = (page1-1)*10
+    $this_page_first_result = ($page - 1) * $results_per_page;
+    // retrieve selected results from database and display them on page
+    $sql = "SELECT * from users ORDER BY id DESC LIMIT " . $this_page_first_result .  ',' . $results_per_page;
+    $result = mysqli_query($connection, $sql);
+}
 ?>
 
 
@@ -71,102 +142,20 @@ $connection = DB();
             <tbody>
 
                 <?php
-                if (isset($_GET['name'])) {
-                    //! define how many results you want per page
-                    $results_per_page = 10;
+                while ($row = mysqli_fetch_array($result)) {
+                    echo  "<tr>";
+                    echo "<td>" . $row["id"] . "</td>";
+                    echo "<td>" . $row["Firstname"] . "</td>";
+                    echo "<td>" . $row["Lastname"] . "</td>";
+                    echo "<td>" . $row["Email"] . "</td>";
+                    echo "<td>" . $row["MobileNo"] . "</td>";
+                    echo "<td>" . $row["Address"] . "</td>";
+                    echo "<td>" . '<button type="button" class="btn btn-primary"><a href="edit.php?id='.$row["id"].'">EDIT</a></button>'   //id='.$row["id"].'
+                    . '<button type="button" class="btn btn-danger"><a style="color:red;" href="">DELETE</a></button>' ."</td>";
 
-                    $valueSearch = $_GET['name'];
-                    // !determine which page number visitor is currently on
-                    if (!isset($_GET['page'])) {
-                        $page = 1;
-                    } else {
-                        $page = $_GET['page'];
-                    }
-
-                    //! determine the sql LIMIT starting number for the results on the displaying page
-                    // page 1 10 results per page , LIMIT 0,10
-                    // page 2 10 results per page , LIMIT 10,10
-                    // page 3 10 results per page , LIMIT 20,10
-                    // starting_limit_number = (page1-1)*10
-                    $this_page_first_result = ($page - 1) * $results_per_page;
-
-                    //! find out the number of Searchresults rows in database
-                    //  $sql1 = "SELECT * FROM users";
-                    // $result = mysqli_query($connection, $sql);
-                    $sql1 = "SELECT * from users WHERE Firstname LIKE '%$valueSearch%'";
-                    // . $this_page_first_result . ',' . $results_per_page;
-                    $SearchResult = mysqli_query($connection, $sql1);
-                    
-
-                    //! check how many rows with mysqli_num_rows
-                    $number_of_results = mysqli_num_rows($SearchResult);
-                    
-
-                    //! determine number of total pages available
-                    // number of page = result / 10;
-                    $number_of_pages = ceil($number_of_results / $results_per_page);
-
-              
-
-             
-
-                    $sql = "SELECT * from users WHERE Firstname LIKE '%$valueSearch%' ORDER BY id DESC LIMIT " . $this_page_first_result . ',' . $results_per_page;
-                    $result = mysqli_query($connection, $sql);
-
-                    while ($row = mysqli_fetch_array($result)) {
-                        echo  "<tr>";
-                        echo "<td>" . $row["id"] . "</td>";
-                        echo "<td>" . $row["Firstname"] . "</td>";
-                        echo "<td>" . $row["Lastname"] . "</td>";
-                        echo "<td>" . $row["Email"] . "</td>";
-                        echo "<td>" . $row["MobileNo"] . "</td>";
-                        echo "<td>" . $row["Address"] . "</td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    // $sql = "SELECT * from users LIMIT 10";
-                    // $result = mysqli_query($connection, $sql);
-
-                    //! define how many results you want per page
-                    $results_per_page = 10;
-
-                    //! find out the number of results rows in database
-                    $sql1 = "SELECT * FROM users";
-                    $result = mysqli_query($connection, $sql1);
-                    //! check how many rows with mysqli_num_rows
-                    $number_of_results = mysqli_num_rows($result);
-
-                    //! determine number of total pages available
-                    // number of page = result / 10;
-                    $number_of_pages = ceil($number_of_results / $results_per_page);
-
-                    // !determine which page number visitor is currently on
-                    if (!isset($_GET['page'])) {
-                        $page = 1;
-                    } else {
-                        $page = $_GET['page'];
-                    }
-
-                    //! determine the sql LIMIT starting number for the results on the displaying page
-                    // page 1 10 results per page , LIMIT 0,10
-                    // page 2 10 results per page , LIMIT 10,10
-                    // page 3 10 results per page , LIMIT 20,10
-                    // starting_limit_number = (page1-1)*10
-                    $this_page_first_result = ($page - 1) * $results_per_page;
-                    // retrieve selected results from database and display them on page
-                    $sql = "SELECT * from users ORDER BY id DESC LIMIT " . $this_page_first_result .  ',' . $results_per_page;
-                    $result = mysqli_query($connection, $sql);
-
-                    while ($rows = mysqli_fetch_array($result)) {
-                        echo  "<tr>";
-                        echo "<td>" . $rows["id"] . "</td>";
-                        echo "<td>" . $rows["Firstname"] . "</td>";
-                        echo "<td>" . $rows["Lastname"] . "</td>";
-                        echo "<td>" . $rows["Email"] . "</td>";
-                        echo "<td>" . $rows["MobileNo"] . "</td>";
-                        echo "<td>" . $rows["Address"] . "</td>";
-                        echo "</tr>";
-                    }
+                    // !  ภายใน echo ใส่ single code คิอแสดง Code html ใส่ double qute คือสตริง
+                    echo "</tr>";
+                                         
                 }
                 ?>
 
