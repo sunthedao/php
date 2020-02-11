@@ -150,12 +150,12 @@ if (isset($_GET['name'])) {
                     echo "<td>" . $row["Email"] . "</td>";
                     echo "<td>" . $row["MobileNo"] . "</td>";
                     echo "<td>" . $row["Address"] . "</td>";
-                    echo "<td>" . '<button type="button" class="btn btn-primary"><a href="edit.php?id='.$row["id"].'">EDIT</a></button>'   //id='.$row["id"].'
-                    . '<button type="button" class="btn btn-danger"><a style="color:red;" href="">DELETE</a></button>' ."</td>";
+                    // ! ไม่ควรเอา tag A กับ button มารวมกัน
+                    echo "<td>" . '<button class="btn btn-primary" onclick="editAlert(' . $row["id"] . ');">EDIT</button>'   //id='.$row["id"].'
+                        . '<button class="btn btn-danger" onclick="deleteAlert(' . $row["id"] . ')">DELETE</button>' . "</td>";
 
                     // !  ภายใน echo ใส่ single code คิอแสดง Code html ใส่ double qute คือสตริง
                     echo "</tr>";
-                                         
                 }
                 ?>
 
@@ -243,6 +243,28 @@ if (isset($_GET['name'])) {
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
+<script>
+    // ส่ง id มาจาก onclick 
+    function editAlert(id) {
+        if (confirm('Are you sure to edit?')) {
+            window.location.href = 'edit.php?id=' + id;
+        }
+
+        return false;
+    }
+
+    
+    function deleteAlert(id) {
+        if (confirm('Are you sure to delete?')) {
+            window.location.href = 'delete.php?id=' + id;
+        }
+
+        return false;
+    }
+
+</script>
+
+
 <?php
 mysqli_close($connection);
 ?>

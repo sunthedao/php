@@ -17,9 +17,7 @@ if (isset($_GET['id'])) {
 
     }
 
-if(isset($_POST['editdata'])){
-    header('index.php');
-}
+
 
 
 ?>
